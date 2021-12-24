@@ -25,7 +25,7 @@ router.get('/:id', async (req, res) => {
   // be sure to include its associated Products
   try {
     const productData = await Product.findByPk(id, {
-      include: Category
+      include:  [Category, Tag]
     });
 
     if (!productData) {
@@ -82,7 +82,7 @@ router.put('/:id', (req, res) => {
   })
     .then((product) => {
       // find all associated tags from ProductTag
-      return ProductTag.findAll({ where: { product_id: req.params.id } });
+      return ProductTag.findAll({ where: { product_id: id } });
     })
     .then((productTags) => {
       // get list of current tag_ids
@@ -92,7 +92,7 @@ router.put('/:id', (req, res) => {
         .filter((tag_id) => !productTagIds.includes(tag_id))
         .map((tag_id) => {
           return {
-            product_id: req.params.id,
+            product_id: id,
             tag_id,
           };
         });
